@@ -21,7 +21,7 @@ RUN mkdir /srv/minecraft
 WORKDIR /srv/minecraft
 
 # Download minecraft
-RUN wget -O minecraft_server.jar "https://s3.amazonaws.com/Minecraft.Download/versions/${MC_VERSION}/minecraft_server.${MC_VERSION}.jar"
+RUN wget -qO minecraft_server.jar "https://s3.amazonaws.com/Minecraft.Download/versions/${MC_VERSION}/minecraft_server.${MC_VERSION}.jar"
 
 # Add files
 ADD start.sh /srv/minecraft/start.sh
