@@ -27,4 +27,4 @@ EXPOSE 25565
 
 # Run the server as the minecraft user
 USER 1000
-ENTRYPOINT ./start.sh
+ENTRYPOINT ./entrypoint
