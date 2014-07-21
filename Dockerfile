@@ -16,8 +16,7 @@ ADD srv/minecraft/ /srv/minecraft/
 WORKDIR /srv/minecraft
 
 # Download minecraft
-ENV MC_VERSION 1.7.10
-RUN wget -qO minecraft_server.jar "https://s3.amazonaws.com/Minecraft.Download/versions/${MC_VERSION}/minecraft_server.${MC_VERSION}.jar"
+RUN wget -qO minecraft_server.jar "https://dl.bukkit.org/latest-dev/craftbukkit.jar"
 
 # Set permissions
 RUN chown -R ${MC_USER}:${MC_USER} .
