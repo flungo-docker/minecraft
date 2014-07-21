@@ -1,6 +1,9 @@
 #!/bin/bash
+
+# Ingore case for case statements
 shopt -s nocasematch
 
+# Function to get user to accept the EULA
 function eula_agreement {
 	echo "You must agree to the Minecraft EULA to run the minecraft server. Please read the EULA then agree to the terms."
 	echo "Minecraft EULA: https://account.mojang.com/documents/minecraft_eula"
@@ -27,9 +30,13 @@ function eula_agreement {
 	esac
 }
 
+# If EULA file does not exist or states that the eula hasn't been accepted request user accepts the licence agreement
 if [ ! -a eula.txt ] || grep 'eula=false' eula.txt
 then
 	eula_agreement;
 fi
 
-java ${MC_JAVA_ARGS} -jar minecraft_server.jar ${MC_ARGS}
+# Load environment
+. ./environment
+
+java -Xmx${JAVA_XMX} -Xms${JAVA_XMS} ${JAVA_ARGS} -jar minecraft_server.jar ${MC_ARGS}

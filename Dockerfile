@@ -7,24 +7,17 @@ FROM mhutter/java
 
 MAINTAINER Fabrizio Lungo <fab@lungo.co.uk>
 
-# Configuration environment settings
-ENV MC_USER mc
-ENV MC_VERSION 1.7.10
-ENV MC_JAVA_ARGS -server -Xms1024M -Xmx1024M -XX:+UseConcMarkSweepGC -XX:+UseParNewGC
-ENV MC_ARGS nogui
-
 # Add Minecraft User
+ENV MC_USER mc
 RUN useradd -d /home/${MC_USER} -m ${MC_USER} -u 1000
 
 # Setup server directory
-RUN mkdir /srv/minecraft
+ADD srv/minecraft/ /srv/minecraft/
 WORKDIR /srv/minecraft
 
 # Download minecraft
+ENV MC_VERSION 1.7.10
 RUN wget -qO minecraft_server.jar "https://s3.amazonaws.com/Minecraft.Download/versions/${MC_VERSION}/minecraft_server.${MC_VERSION}.jar"
-
-# Add files
-ADD start.sh /srv/minecraft/start.sh
 
 # Set permissions
 RUN chown -R ${MC_USER}:${MC_USER} .

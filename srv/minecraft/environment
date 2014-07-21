@@ -1,0 +1,4 @@
+JAVA_XMS="1024M"
+JAVA_XMX="1024M"
+JAVA_ARGS="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC"
+MC_ARGS="nogui"
