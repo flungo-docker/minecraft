@@ -8,8 +8,7 @@ FROM mhutter/java
 MAINTAINER Fabrizio Lungo <fab@lungo.co.uk>
 
 # Add Minecraft User
-ENV MC_USER mc
-RUN useradd -d /home/${MC_USER} -m ${MC_USER} -u 1000
+RUN useradd -d /home/mc -m mc -u 1000
 
 # Setup server directory
 ADD srv/minecraft/ /srv/minecraft/
@@ -20,7 +19,7 @@ ENV MC_VERSION 1.7.10
 RUN wget -qO minecraft_server.jar "https://s3.amazonaws.com/Minecraft.Download/versions/${MC_VERSION}/minecraft_server.${MC_VERSION}.jar"
 
 # Set permissions
-RUN chown -R ${MC_USER}:${MC_USER} .
+RUN chown -R mc:mc .
 
 # Expose minecraft port
 EXPOSE 25565
