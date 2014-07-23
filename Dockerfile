@@ -8,22 +8,20 @@ FROM mhutter/java
 MAINTAINER Fabrizio Lungo <fab@lungo.co.uk>
 
 # Add Minecraft User
-RUN useradd -d /home/mc -m mc -u 1000
-
-# Setup server directory
-ADD srv/minecraft/ /srv/minecraft/
-WORKDIR /srv/minecraft
-
-# Download minecraft
-ENV MC_VERSION 1.7.10
-RUN wget -qO minecraft_server.jar "https://s3.amazonaws.com/Minecraft.Download/versions/${MC_VERSION}/minecraft_server.${MC_VERSION}.jar"
-
-# Set permissions
-RUN chown -R mc:mc .
+RUN useradd -m mc -u 1000
 
 # Expose minecraft port
 EXPOSE 25565
 
+# Setup server directory
+RUN mkdir /srv/minecraft/
+RUN chown mc:mc /srv/minecraft/
+WORKDIR /srv/minecraft/
+
+# Add files
+ADD usr/local/share/minecraft/ /usr/local/share/minecraft/
+RUN ln -s /usr/local/share/minecraft/entrypoint /usr/local/bin/entrypoint
+
 # Run the server as the minecraft user
 USER 1000
-ENTRYPOINT ./entrypoint
+ENTRYPOINT entrypoint

@@ -1,0 +1,86 @@
+#!/bin/bash
+
+###########
+## Setup ##
+###########
+
+MC_LIB=$(dirname $(readlink -f $0))
+
+# Load environment
+. $MC_LIB/setting-defaults
+
+# Ingore case for case statements
+shopt -s nocasematch
+
+###############
+## Functions ##
+###############
+
+# Download server.jar
+function update {
+	echo
+	echo "Downloading minecraft server"
+	MC_VERSION="1.7.10"
+	wget -O server.jar "https://s3.amazonaws.com/Minecraft.Download/versions/${MC_VERSION}/minecraft_server.${MC_VERSION}.jar"
+
+	for path in $MC_LIB/defaults/*
+	do
+		file=$(basename $path)
+		if [ ! -a $file ]
+		then
+			echo "File $file does not exist. Adding default $file"
+			cp $path .
+		fi
+	done
+}
+
+# Function to get user to accept the EULA
+function eula_agreement {
+	echo
+	echo "You must agree to the Minecraft EULA to run the minecraft server. Please read the EULA then agree to the terms."
+	echo "Minecraft EULA: https://account.mojang.com/documents/minecraft_eula"
+	echo
+	echo -n "Do you agree with the Minecraft EULA? (Yes/No): "
+	read response;
+	echo
+	case "$response" in
+		yes)
+			if [ -a eula.txt ] && grep 'eula=false' eula.txt > /dev/null
+			then
+				sed -i 's/eula=false/eula=true/' eula.txt
+			else
+				echo "eula=true" >> eula.txt
+			fi
+			echo "Thank you for agreeing"
+			;;
+		no)
+			echo "You cannot run a Minecraft Server without agreeing to the EULA."
+			exit 1
+			;;
+		*)
+			eula_agreement
+			;;
+	esac
+}
+
+####################
+## Initialisation ##
+####################
+
+# Get minecraft JAR if not present
+if [ ! -a /srv/minecraft/server.jar ]
+then
+	update
+fi
+
+# If EULA file does not exist or states that the eula hasn't been accepted request user accepts the licence agreement
+if [ ! -a eula.txt ] || grep 'eula=false' eula.txt > /dev/null
+then
+	eula_agreement
+fi
+
+#########
+## Run ##
+#########
+
+java -Xmx${JAVA_XMX} -Xms${JAVA_XMS} ${JAVA_ARGS} -jar server.jar ${MC_ARGS}
